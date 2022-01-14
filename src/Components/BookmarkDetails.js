@@ -1,12 +1,29 @@
 import { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
 
 function BookmarkDetails() {
-  const [bookmark] = useState([]);
+  const [bookmark, setBookmark] = useState([]);
   let { index } = useParams();
+  let navigate = useNavigate();
+  useEffect(() => {
+    axios.get(`${process.env.REACT_APP_API_URL}/bookmarks/${index}`)
+    .then((res)=>{
+      setBookmark(res.data);
+    })
+    .catch(()=>{
+      navigate("/not-found");
+    })
 
-  useEffect(() => {}, []);
-  const handleDelete = () => {};
+  }, [index, navigate]);
+  const handleDelete = () => {
+    axios.delete(`${process.env.REACT_APP_API_URL}/bookmarks/${index}`)
+    .then((res)=>{
+      navigate("/bookmarks");
+    }).catch((err)=>{
+      console.log(err);
+    })
+  };
   return (
     <article>
       <h3>
